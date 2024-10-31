@@ -1,16 +1,31 @@
 package org.example.springjwtpractice1.config;
 
+import org.example.springjwtpractice1.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final AuthenticationConfiguration authenticationConfiguration;
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+        this.authenticationConfiguration = authenticationConfiguration;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
     // 사용자 비밀번호 암호화
     @Bean
@@ -36,6 +51,8 @@ public class SecurityConfig {
                 .requestMatchers("/admin").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()// 로그인한 모든 사용자
         );
+
+        http.addFilterAt(new LoginFilter(authenticationManagerBean(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
 
         // session stateless 설정, JWT 는 session stateless 로 설정해야함
         http.sessionManagement(session -> session
