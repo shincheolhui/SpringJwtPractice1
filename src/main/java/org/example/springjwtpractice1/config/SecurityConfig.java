@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -37,13 +38,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         // csrf disable, session stateless 로 하기 때문에 csrf 공격에 대한 처리하지 않음
-        http.csrf(auth -> auth.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
 
         // form 로그인 방식 disable, JWT 방식으로 하기 때문에 필요없음
-        http.formLogin(auth -> auth.disable());
+        http.formLogin(AbstractHttpConfigurer::disable);
 
         // http basic 인증 방식 disable, JWT 방식으로 하기 때문에 필요없음
-        http.httpBasic(auth -> auth.disable());
+        http.httpBasic(AbstractHttpConfigurer::disable);
 
         // 경로별 인가 작업
         http.authorizeHttpRequests(auth -> auth

@@ -37,12 +37,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-
+        System.out.println("LoginFilter.successfulAuthentication");
+        System.out.println("request.getRequestURL() = " + request.getRequestURL());
+        System.out.println("request.getQueryString() = " + request.getQueryString());
+        System.out.println("response.getStatus() = " + response.getStatus());
+        System.out.println("response.getContentType() = " + response.getContentType());
     }
 
     //로그인 실패시 실행하는 메소드
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-
+        System.out.println("LoginFilter.unsuccessfulAuthentication");
+        System.out.println("request.getRequestURI() = " + request.getRequestURI());
+        System.out.println("request.getQueryString() = " + request.getQueryString());
+        System.out.println("failed = " + failed);
     }
 }
